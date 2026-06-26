@@ -374,6 +374,26 @@ static void Key_Unbindall_f( void )
 	// set some defaults
 	Key_SetBinding( K_ESCAPE, "cancelselect" );
 	Key_SetBinding( K_START_BUTTON, "cancelselect" );
+
+#if XASH_UWP
+	Key_SetBinding( K_A_BUTTON, "+jump" );
+	Key_SetBinding( K_B_BUTTON, "+use" );
+	Key_SetBinding( K_X_BUTTON, "+reload" );
+	Key_SetBinding( K_Y_BUTTON, "impulse 100" );
+	Key_SetBinding( K_BACK_BUTTON, "pause" );
+	Key_SetBinding( K_LSTICK, "+speed" );
+	Key_SetBinding( K_RSTICK, "+duck" );
+	Key_SetBinding( K_L1_BUTTON, "+duck" );
+	Key_SetBinding( K_R1_BUTTON, "+attack" );
+	Key_SetBinding( K_L2_BUTTON, "+speed" );
+	Key_SetBinding( K_R2_BUTTON, "+attack2" );
+	Key_SetBinding( K_LTRIGGER, "+speed" );
+	Key_SetBinding( K_RTRIGGER, "+attack" );
+	Key_SetBinding( K_DPAD_UP, "impulse 201" );
+	Key_SetBinding( K_DPAD_DOWN, "lastinv" );
+	Key_SetBinding( K_DPAD_LEFT, "invprev" );
+	Key_SetBinding( K_DPAD_RIGHT, "invnext" );
+#endif
 }
 
 /*

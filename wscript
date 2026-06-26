@@ -108,7 +108,7 @@ SUBDIRS = [
 	Subproject('3rdparty/MultiEmulator',lambda x: x.env.CLIENT),
 #	Subproject('3rdparty/freevgui',     lambda x: x.env.CLIENT),
 	Subproject('stub/client',           lambda x: x.env.CLIENT),
-	Subproject('game_launch',           lambda x: x.env.LAUNCHER),
+	Subproject('game_launch',           lambda x: x.env.LAUNCHER and not x.env.XASH_UWP),
 	Subproject('engine'), # keep latest for static linking
 
 	# enabled optionally
@@ -167,6 +167,9 @@ def options(opt):
 
 	grp.add_option('--disable-werror', action = 'store_true', dest = 'DISABLE_WERROR', default = False,
 		help = 'disable compilation abort on warning')
+
+	grp.add_option('--uwp', action = 'store_true', dest = 'UWP', default = False,
+		help = 'build Windows targets with UWP-compatible platform shims [default: %(default)s]')
 
 	grp.add_option('--enable-tests', action = 'store_true', dest = 'TESTS', default = False,
 		help = 'enable building standalone tests (does not enable engine tests!) [default: %(default)s]')
@@ -413,6 +416,10 @@ def configure(conf):
 	conf.env.ENABLE_UTILS  = conf.options.ENABLE_UTILS
 	conf.env.ENABLE_XAR    = conf.options.ENABLE_XAR
 	conf.env.ENABLE_FUZZER = conf.options.ENABLE_FUZZER
+	conf.env.XASH_UWP      = conf.options.UWP
+	conf.define_cond('XASH_UWP', conf.options.UWP)
+	if conf.options.UWP and conf.env.COMPILER_CXX == 'msvc':
+		conf.env.append_unique('CXXFLAGS', ['/std:c++17', '/EHsc'])
 
 	if not conf.options.DEDICATED:
 		conf.env.SERVER = conf.options.ENABLE_DEDICATED
@@ -472,7 +479,10 @@ def configure(conf):
 		# Don't check them more than once, to save time
 		# Usually, they are always available
 		# but we need them in uselib
-		a = [ 'user32', 'shell32', 'gdi32', 'advapi32', 'dbghelp', 'psapi', 'ws2_32', 'bcrypt' ]
+		if conf.options.UWP:
+			a = [ 'ws2_32', 'bcrypt', 'windowsapp' ]
+		else:
+			a = [ 'user32', 'shell32', 'gdi32', 'advapi32', 'dbghelp', 'psapi', 'ws2_32', 'bcrypt' ]
 		if conf.env.COMPILER_CC == 'msvc':
 			for i in a:
 				conf.start_msg('Checking for MSVC library')

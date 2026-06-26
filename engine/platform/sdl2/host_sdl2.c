@@ -24,6 +24,10 @@ GNU General Public License for more details.
 #include "sound.h"
 #include "vid_common.h"
 
+#if XASH_UWP
+#include "xash_uwp_virtual_mouse.h"
+#endif
+
 /*
 =============
 SDLash_KeyEvent
@@ -89,6 +93,9 @@ static void SDLash_KeyEvent( SDL_KeyboardEvent key )
 		case SDL_SCANCODE_TAB: keynum = K_TAB; break;
 		case SDL_SCANCODE_RETURN: keynum = K_ENTER; break;
 		case SDL_SCANCODE_AC_BACK:
+#if XASH_UWP
+			return;
+#endif
 		case SDL_SCANCODE_ESCAPE: keynum = K_ESCAPE; break;
 		case SDL_SCANCODE_SPACE: keynum = K_SPACE; break;
 		case SDL_SCANCODE_BACKSPACE: keynum = K_BACKSPACE; break;
@@ -427,6 +434,10 @@ void Platform_RunEvents( void )
 
 	while( host.status != HOST_CRASHED && !host.shutdown_issued && SDL_PollEvent( &event ) )
 		SDLash_EventHandler( &event );
+
+#if XASH_UWP
+	xash_uwp_virtual_mouse_update();
+#endif
 
 #if XASH_PSVITA
 	PSVita_InputUpdate();

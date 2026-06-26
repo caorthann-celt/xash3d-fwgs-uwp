@@ -136,7 +136,7 @@ returns username for current profile
 const char *Sys_GetCurrentUser( void )
 {
 	// TODO: move to platform
-#if XASH_WIN32
+#if XASH_WIN32 && !XASH_UWP
 	static wchar_t sw_userName[MAX_STRING];
 	DWORD size = ARRAYSIZE( sw_userName );
 
@@ -333,7 +333,7 @@ wait for 'Esc' key will be hit
 */
 static void Sys_WaitForQuit( void )
 {
-#if XASH_WIN32
+#if XASH_WIN32 && !XASH_UWP
 	MSG	msg;
 	msg.message = 0;
 

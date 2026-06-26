@@ -20,6 +20,10 @@ GNU General Public License for more details.
 #include "client.h"
 #include "platform_sdl2.h"
 
+#if XASH_UWP
+#include "xash_uwp_virtual_mouse.h"
+#endif
+
 static const int g_button_mapping[] =
 {
 #if XASH_NSWITCH // devkitPro/SDL has inverted Nintendo layout for SDL_GameController
@@ -295,6 +299,10 @@ void SDLash_HandleGameControllerEvent( SDL_Event *ev )
 	{
 	case SDL_CONTROLLERAXISMOTION:
 		SDLash_SetActiveGameController( ev->caxis.which );
+#if XASH_UWP
+		if( xash_uwp_virtual_mouse_handle_axis( ev->caxis.axis, ev->caxis.value ))
+			break;
+#endif
 		x = ev->caxis.axis;
 		if( x >= 0 && x < ARRAYSIZE( g_axis_mapping ))
 			Joy_AxisMotionEvent( g_axis_mapping[x], ev->caxis.value );
@@ -305,6 +313,9 @@ void SDLash_HandleGameControllerEvent( SDL_Event *ev )
 		x = ev->cbutton.button;
 		if( x >= 0 && x < ARRAYSIZE( g_button_mapping ))
 			Key_Event( g_button_mapping[x], ev->cbutton.state );
+#if XASH_UWP
+		xash_uwp_virtual_mouse_handle_button( x, ev->cbutton.state );
+#endif
 		break;
 	case SDL_CONTROLLERDEVICEREMOVED:
 		SDLash_GameControllerRemoved( ev->cdevice.which );

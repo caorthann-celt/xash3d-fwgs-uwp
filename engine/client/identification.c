@@ -541,7 +541,7 @@ static bloomfilter_t ID_GenerateRawId( void )
 	count += ID_ProcessFiles( &value, "/sys/block", "device/cid" );
 	count += ID_ProcessNetDevices( &value );
 #endif
-#if XASH_WIN32
+#if XASH_WIN32 && !XASH_UWP
 	count += ID_ProcessWMIC( &value, L"wmic path win32_physicalmedia get SerialNumber " );
 	count += ID_ProcessWMIC( &value, L"wmic bios get serialnumber " );
 #endif
@@ -593,7 +593,7 @@ static uint ID_CheckRawId( bloomfilter_t filter )
 		count += (filter & value) == value;
 #endif
 
-#if XASH_WIN32
+#if XASH_WIN32 && !XASH_UWP
 	count += ID_CheckWMIC( filter, L"wmic path win32_physicalmedia get SerialNumber" );
 	count += ID_CheckWMIC( filter, L"wmic bios get serialnumber" );
 #endif
@@ -691,7 +691,7 @@ void ID_Init( void )
 		ID_Check();
 	}
 
-#elif XASH_WIN32
+#elif XASH_WIN32 && !XASH_UWP
 	{
 		CHAR szBuf[MAX_PATH];
 		ID_GetKeyData( HKEY_CURRENT_USER, "Software\\"XASH_ENGINE_NAME"\\", "xash_id", szBuf, MAX_PATH );
@@ -737,7 +737,7 @@ void ID_Init( void )
 
 #if XASH_ANDROID && !XASH_DEDICATED
 	Android_SaveID( va("%016"PRIX64, id^SYSTEM_XOR_MASK ) );
-#elif XASH_WIN32
+#elif XASH_WIN32 && !XASH_UWP
 	{
 		CHAR Buf[MAX_PATH];
 		sprintf( Buf, "%016"PRIX64, id^SYSTEM_XOR_MASK );

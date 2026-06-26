@@ -2033,7 +2033,7 @@ static int GAME_EXPORT pfnGetWindowCenterX( void )
 {
 	int x = 0;
 
-#if XASH_WIN32
+#if XASH_WIN32 && !XASH_UWP
 	if( m_ignore.value )
 	{
 		POINT pos;
@@ -2059,7 +2059,7 @@ static int GAME_EXPORT pfnGetWindowCenterY( void )
 {
 	int y = 0;
 
-#if XASH_WIN32
+#if XASH_WIN32 && !XASH_UWP
 	if( m_ignore.value )
 	{
 		POINT pos;

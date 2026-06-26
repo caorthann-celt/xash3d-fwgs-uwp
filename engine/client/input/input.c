@@ -354,7 +354,9 @@ static void IN_MouseMove( void )
 	VGui_MouseMove( x, y );
 
 	// if the menu is visible, move the menu cursor
+#if !XASH_UWP
 	UI_MouseMove( x, y );
+#endif
 }
 
 /*

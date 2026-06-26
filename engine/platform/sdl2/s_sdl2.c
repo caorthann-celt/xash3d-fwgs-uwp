@@ -93,7 +93,7 @@ qboolean SNDDMA_Init( void )
 	// Also, fun note, GoldSrc seems doesn't use SDL2 for sound stuff at all, as nothing
 	// reference SDL audio functions there. It's probably has DirectSound backend, that's
 	// why modders never stumble upon this bug.
-#if XASH_WIN32
+#if XASH_WIN32 && !XASH_UWP
 	const char *driver = "directsound";
 
 	if( SDL_getenv( "SDL_AUDIODRIVER" ))
@@ -267,6 +267,11 @@ VoiceCapture_Init
 qboolean VoiceCapture_Init( void )
 {
 	SDL_AudioSpec wanted, spec;
+
+#if XASH_UWP
+	Con_Printf( S_WARN "%s: voice capture is disabled on UWP.\n", __func__ );
+	return false;
+#endif
 
 	if( !SDLash_IsAudioError( in_dev ))
 	{
